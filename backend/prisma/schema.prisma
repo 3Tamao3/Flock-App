@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           String     @id @default(uuid())
+  username     String     @unique
+  email        String     @unique
+  passwordHash String
+  createdAt    DateTime   @default(now())
+
+  chatsAsUser1 Chat[]     @relation("User1Chats")
+  chatsAsUser2 Chat[]     @relation("User2Chats")
+  messages     Message[]
+  routes       Route[]
+  favorites    Favorite[]
+}
+
+model Chat {
+  id          String    @id @default(uuid())
+  user1       User      @relation("User1Chats", fields: [user1Id], references: [id])
+  user1Id     String
+  user2       User      @relation("User2Chats", fields: [user2Id], references: [id])
+  user2Id     String
+  lastMessage String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  messages    Message[]
+
+  @@unique([user1Id, user2Id])
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  content   String
+  chat      Chat     @relation(fields: [chatId], references: [id])
+  chatId    String
+  sender    User     @relation(fields: [senderId], references: [id])
+  senderId  String
+  createdAt DateTime @default(now())
+}
+
+model Route {
+  id          String   @id @default(uuid())
+  origin      String
+  destination String
+  distance    Float
+  duration    Float
+  originLat   Float
+  originLng   Float
+  destLat     Float
+  destLng     Float
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  createdAt   DateTime @default(now())
+}
+
+model Favorite {
+  id          String   @id @default(uuid())
+  destination String
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  createdAt   DateTime @default(now())
+}
