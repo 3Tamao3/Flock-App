@@ -1,14 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateFavoriteDto } from './dto/create-favorite.dto';
 
 @Injectable()
 export class FavoritesService {
   constructor(private prisma: PrismaService) {}
-
-  async create(userId: string, dto: CreateFavoriteDto) {
-    return this.prisma.favorite.create({ data: { ...dto, userId } });
-  }
 
   async findAll(userId: string) {
     return this.prisma.favorite.findMany({
@@ -17,7 +12,11 @@ export class FavoritesService {
     });
   }
 
-  async remove(id: string) {
-    return this.prisma.favorite.delete({ where: { id } });
+  async create(userId: string, destination: string) {
+    return this.prisma.favorite.create({ data: { userId, destination } });
+  }
+
+  async remove(id: string, userId: string) {
+    return this.prisma.favorite.deleteMany({ where: { id, userId } });
   }
 }

@@ -1,26 +1,31 @@
-import { Controller, Get, Post, Delete, Body, Param, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/jwt.guard';
 import { FavoritesService } from './favorites.service';
-import { CreateFavoriteDto } from './dto/create-favorite.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { CurrentUser } from '../common/decorators/current-user.decorator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
-@UseGuards(JwtAuthGuard)
+class CreateFavoriteDto {
+  @IsString()
+  @IsNotEmpty()
+  destination!: string;
+}
+
 @Controller('favorites')
+@UseGuards(JwtAuthGuard)
 export class FavoritesController {
-  constructor(private favoritesService: FavoritesService) {}
+  constructor(private readonly favoritesService: FavoritesService) {}
 
   @Get()
-  getAll(@CurrentUser() user: { id: string }) {
-    return this.favoritesService.findAll(user.id);
+  findAll(@Req() req: any) {
+    return this.favoritesService.findAll(req.user.id as string);
   }
 
   @Post()
-  create(@CurrentUser() user: { id: string }, @Body() dto: CreateFavoriteDto) {
-    return this.favoritesService.create(user.id, dto);
+  create(@Body() dto: CreateFavoriteDto, @Req() req: any) {
+    return this.favoritesService.create(req.user.id as string, dto.destination);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.favoritesService.remove(id);
+  remove(@Param('id') id: string, @Req() req: any) {
+    return this.favoritesService.remove(id, req.user.id as string);
   }
 }

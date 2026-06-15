@@ -19,10 +19,7 @@ export class ChatGateway {
     @MessageBody() data: { chatId: string; content: string; senderId: string },
     @ConnectedSocket() client: Socket,
   ) {
-    const message = await this.messagesService.send(data.senderId, {
-      chatId: data.chatId,
-      content: data.content,
-    });
+    const message = await this.messagesService.send(data.chatId, data.senderId, data.content);
     this.server.to(data.chatId).emit('newMessage', message);
     return message;
   }

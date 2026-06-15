@@ -9,13 +9,19 @@ export class ChatsService {
     const [a, b] = [userId, otherUserId].sort();
     const existing = await this.prisma.chat.findUnique({
       where: { user1Id_user2Id: { user1Id: a, user2Id: b } },
-      include: { user1: { select: { id: true, username: true } }, user2: { select: { id: true, username: true } } },
+      include: {
+        user1: { select: { id: true, username: true } },
+        user2: { select: { id: true, username: true } },
+      },
     });
     if (existing) return existing;
 
     return this.prisma.chat.create({
       data: { user1Id: a, user2Id: b },
-      include: { user1: { select: { id: true, username: true } }, user2: { select: { id: true, username: true } } },
+      include: {
+        user1: { select: { id: true, username: true } },
+        user2: { select: { id: true, username: true } },
+      },
     });
   }
 

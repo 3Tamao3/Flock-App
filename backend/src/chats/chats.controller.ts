@@ -1,20 +1,19 @@
-import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/jwt.guard';
 import { ChatsService } from './chats.service';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { CurrentUser } from '../common/decorators/current-user.decorator';
 
-@UseGuards(JwtAuthGuard)
 @Controller('chats')
+@UseGuards(JwtAuthGuard)
 export class ChatsController {
-  constructor(private chatsService: ChatsService) {}
-
-  @Get()
-  getAll(@CurrentUser() user: { id: string }) {
-    return this.chatsService.findAllForUser(user.id);
-  }
+  constructor(private readonly chatsService: ChatsService) {}
 
   @Post('create-or-get')
-  createOrGet(@CurrentUser() user: { id: string }, @Body('otherUserId') otherUserId: string) {
-    return this.chatsService.createOrGet(user.id, otherUserId);
+  createOrGet(@Body() body: { userId: string }, @Req() req: any) {
+    return this.chatsService.createOrGet(req.user.id as string, body.userId);
+  }
+
+  @Get()
+  findAll(@Req() req: any) {
+    return this.chatsService.findAllForUser(req.user.id as string);
   }
 }

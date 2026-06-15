@@ -1,21 +1,53 @@
-import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/jwt.guard';
 import { RoutesService } from './routes.service';
-import { CreateRouteDto } from './dto/create-route.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { CurrentUser } from '../common/decorators/current-user.decorator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
-@UseGuards(JwtAuthGuard)
+class CreateRouteDto {
+  @IsString()
+  @IsNotEmpty()
+  destination!: string;
+
+  @IsNumber()
+  distance!: number;
+
+  @IsNumber()
+  duration!: number;
+
+  @IsNumber()
+  originLat!: number;
+
+  @IsNumber()
+  originLng!: number;
+
+  @IsNumber()
+  destLat!: number;
+
+  @IsNumber()
+  destLng!: number;
+}
+
 @Controller('routes')
+@UseGuards(JwtAuthGuard)
 export class RoutesController {
-  constructor(private routesService: RoutesService) {}
+  constructor(private readonly routesService: RoutesService) {}
 
   @Post()
-  create(@CurrentUser() user: { id: string }, @Body() dto: CreateRouteDto) {
-    return this.routesService.create(user.id, dto);
+  create(@Body() dto: CreateRouteDto, @Req() req: any) {
+    return this.routesService.saveRoute(
+      req.user.id as string,
+      dto.destination,
+      dto.distance,
+      dto.duration,
+      dto.originLat,
+      dto.originLng,
+      dto.destLat,
+      dto.destLng,
+    );
   }
 
   @Get('history')
-  getHistory(@CurrentUser() user: { id: string }) {
-    return this.routesService.findHistory(user.id);
+  getHistory(@Req() req: any) {
+    return this.routesService.getHistory(req.user.id as string);
   }
 }
