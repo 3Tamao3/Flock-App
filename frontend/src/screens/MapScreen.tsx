@@ -300,3 +300,5 @@ const styles = StyleSheet.create({
   arrow: { alignItems: 'center', justifyContent: 'center' },
   pin: { alignItems: 'center', justifyContent: 'center' },
 });
+
+export default MapScreen;
