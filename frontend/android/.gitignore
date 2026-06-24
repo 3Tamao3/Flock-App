@@ -1,0 +1,19 @@
+# OSX
+#
+.DS_Store
+
+# Android/IntelliJ
+#
+build/
+.idea
+.gradle
+local.properties
+*.iml
+*.hprof
+.cxx/
+
+# Bundle artifacts
+*.jsbundle
+
+# Mapbox token (contains secret — set locally, do not commit)
+app/src/main/res/values/mapbox.xml

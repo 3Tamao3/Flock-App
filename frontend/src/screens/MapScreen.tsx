@@ -301,4 +301,3 @@ const styles = StyleSheet.create({
   pin: { alignItems: 'center', justifyContent: 'center' },
 });
 
-export default MapScreen;

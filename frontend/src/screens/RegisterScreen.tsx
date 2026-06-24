@@ -60,7 +60,7 @@ export default function RegisterScreen({ navigation }: Props) {
         <Text style={s.buttonText}>Register</Text>
       </TouchableOpacity>
       <Text style={s.link} onPress={() => navigation.navigate('Login')}>
-        Already have an account? Login here!
+        Login here!
       </Text>
     </View>
   );

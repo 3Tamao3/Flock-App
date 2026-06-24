@@ -28,8 +28,8 @@ export default function LoginScreen({ navigation }: Props) {
 
   return (
     <View style={s.container}>
-      <Text style={s.title}>Flock</Text>
-      <Text style={s.subtitle}>Login to your account</Text>
+      <Text style={s.title}>Flock-App </Text>
+      <Text style={s.subtitle}>Login</Text>
       <TextInput
         style={s.input}
         placeholder="Email"
@@ -51,7 +51,7 @@ export default function LoginScreen({ navigation }: Props) {
         <Text style={s.buttonText}>Login</Text>
       </TouchableOpacity>
       <Text style={s.link} onPress={() => navigation.navigate('Register')}>
-        Don't have an account? Register here!
+        Register here!
       </Text>
     </View>
   );
